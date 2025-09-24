@@ -34,6 +34,9 @@ const MAX_PER_RUN     = Number(process.env.MAX_PER_RUN ?? 200);
 // אופציונלי: בדיקות אוף־ליין מקובץ HTML מקומי
 const LOCAL_HTML = process.env.LOCAL_HTML; // למשל: ./openinsider.html
 
+const BIG_TRADE_THRESHOLD = Number(process.env.BIG_TRADE_THRESHOLD ?? 10_000_000);
+const ALERT_ROLE_ID = process.env.ALERT_ROLE_ID || "";            // Role ID של @alert
+
 /** ====== Utils ====== */
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -150,13 +153,16 @@ function buildEmbed(r) {
 }
 
 /** ====== שליחה לדיסקורד (עם 429 Retry) ====== */
-async function sendDiscordEmbeds(embeds) {
+async function sendDiscordEmbeds(embeds, mention) {
+  const payload = { embeds, allowed_mentions: { parse: [] } };
+  if (mention) {
+    payload.content = `<@&${mention}>`;
+    payload.allowed_mentions = { roles: [mention] };
+  }
+  
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      await axios.post(DISCORD_WEBHOOK_URL, {
-        embeds,
-        allowed_mentions: { parse: [] }
-      }, { timeout: 15000 });
+      await axios.post(DISCORD_WEBHOOK_URL, payload, { timeout: 15000 });
       return;
     } catch (e) {
       if (e?.response?.status === 429) {
@@ -260,7 +266,11 @@ async function sendDiscordText(content) {
     for (let i = 0; i < limited.length; i += EMBEDS_PER_REQ) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
       const embeds = slice.map(({ r }) => buildEmbed(r));
-      await sendDiscordEmbeds(embeds);
+      
+      const isBig = Math.abs(Number.isFinite(r.value) ? r.value : parseMoney(r.valueText)) > BIG_TRADE_THRESHOLD ;
+      const mention = isBig ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : undefined) : undefined;
+      
+      await sendDiscordEmbeds(embeds, mention);
       for (const { key } of slice) {
         await appendSent(key);
         sent.add(key);
