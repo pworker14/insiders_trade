@@ -130,6 +130,7 @@ function pickColorByTrade(tradeCode) {
   return 0x95a5a6; // אחר/נייטרלי
 }
 function oneLine(r) {
+  const isBig = Math.abs(Number.isFinite(r.value) ? r.value : parseMoney(r.valueText)) > 10_000_000;
   const parts = [
     `${r.tradeDate}\n`,
     `**$${r.ticker}  ${r.valueText}  (${r.qtyText} Stocks)**\n`,
@@ -137,7 +138,9 @@ function oneLine(r) {
     `${r.insiderName} (Title: ${r.title || "—"})\n`,
     r.filingLink ? `[SEC Form 4 (${r.filingDateTime})](${r.filingLink})` : null
   ].filter(Boolean);
-  return parts.join("");
+
+  const line = parts.join("");
+  return isBig ? `${line} @analyst_rating` : line;
 }
 function buildEmbed(r) {
   return {
