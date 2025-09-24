@@ -140,7 +140,7 @@ function oneLine(r) {
   ].filter(Boolean);
 
   const line = parts.join("");
-  return isBig ? `${line} @analyst_rating` : line;
+  return isBig ? `${line} @insider_trade` : line;
 }
 function buildEmbed(r) {
   return {
