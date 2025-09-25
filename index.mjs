@@ -268,8 +268,24 @@ async function sendDiscordText(content) {
     for (let i = 0; i < limited.length; i += EMBEDS_PER_REQ) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
       const embeds = slice.map(({ r }) => buildEmbed(r));
-      console.log(`first cell in slice:`, slice[0]);
-      const mention = (Math.abs(Number.isFinite(slice[0].r.value)) ? slice[0].r.value : parseMoney(slice[0].r.valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
+      console.log(`first cell in slice:`, slice[0].r);
+      // const mention = (Math.abs(Number.isFinite(slice[0].r.value)) ? slice[0].r.value : parseMoney(slice[0].r.valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
+
+      var mention = "";
+      var tradeValue = slice[0].r.value;
+      console.log(`Trade Value: ${tradeValue}`);
+
+      if (tradeValue === undefined || tradeValue === null || tradeValue == "" || Number.isNaN(tradeValue) || !Number.isFinite(tradeValue)) {
+        tradeValue = parseMoney(slice[0].r.valueText);
+        console.log(`Parsed Trade Value: ${tradeValue}`);
+      }
+
+      if (Math.abs(Number.isFinite(tradeValue))  > BIG_TRADE_THRESHOLD) {
+        if (ALERT_ROLE_ID) {
+          mention = ALERT_ROLE_ID;
+          console.log(`Mentioning role ID: ${mention}`);
+        }
+      }
 
       await sendDiscordEmbeds(embeds, mention);
       for (const { key } of slice) {
