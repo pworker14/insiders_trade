@@ -269,7 +269,7 @@ async function sendDiscordText(content) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
       const embeds = slice.map(({ r }) => buildEmbed(r));
       console.log(`first cell in slice:`, slice[0]);
-      const mention = (Math.abs(Number.isFinite(slice[0].value)) ? slice[0].value : parseMoney(slice[0].valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
+      const mention = (Math.abs(Number.isFinite(slice[0].r.value)) ? slice[0].r.value : parseMoney(slice[0].r.valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
 
       await sendDiscordEmbeds(embeds, mention);
       for (const { key } of slice) {
