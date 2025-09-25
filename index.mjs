@@ -266,14 +266,8 @@ async function sendDiscordText(content) {
   if (EMBED_MODE) {
     for (let i = 0; i < limited.length; i += EMBEDS_PER_REQ) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
-      var embeds, mention = slice.map(({ r }) => {
-        const currentEmbed = buildEmbed(r);
-      
-        const isBig = Math.abs(Number.isFinite(r.value) ? r.value : parseMoney(r.valueText)) > BIG_TRADE_THRESHOLD ;
-        const currentMention = isBig ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
-
-        return currentEmbed, currentMention;
-      });
+      const embeds = slice.map(({ r }) => buildEmbed(r));
+      const mention = (Math.abs(Number.isFinite(slice[0].value)) ? slice[0].value : parseMoney(slice[0].valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
 
       await sendDiscordEmbeds(embeds, mention);
       for (const { key } of slice) {
