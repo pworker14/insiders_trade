@@ -161,6 +161,7 @@ async function sendDiscordEmbeds(embeds, mention) {
   
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
+      console.log("Payload:", JSON.stringify(payload, null, 2));
       await axios.post(DISCORD_WEBHOOK_URL, payload, { timeout: 15000 });
       return;
     } catch (e) {
