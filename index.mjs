@@ -154,8 +154,9 @@ function buildEmbed(r) {
 
 /** ====== שליחה לדיסקורד (עם 429 Retry) ====== */
 async function sendDiscordEmbeds(embeds, mention) {
+  console.log(`sendDiscordEmbeds(): embeds=${embeds}, mention=${mention}`);
   var payload = { embeds, allowed_mentions: { parse: [] } };
-  if (mention) {
+  if (mention && mention != undefined && mention != null && mention != "") {
     payload = { embeds, allowed_mentions: { parse: [mention] } };
   }
   
@@ -266,12 +267,12 @@ async function sendDiscordText(content) {
     for (let i = 0; i < limited.length; i += EMBEDS_PER_REQ) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
       var embeds, mention = slice.map(({ r }) => {
-        const currentRmbed = buildEmbed(r);
+        const currentEmbed = buildEmbed(r);
       
         const isBig = Math.abs(Number.isFinite(r.value) ? r.value : parseMoney(r.valueText)) > BIG_TRADE_THRESHOLD ;
-        const currentMention = isBig ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : undefined) : undefined;
+        const currentMention = isBig ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
 
-        return currentRmbed, currentMention;
+        return currentEmbed, currentMention;
       });
 
       await sendDiscordEmbeds(embeds, mention);
