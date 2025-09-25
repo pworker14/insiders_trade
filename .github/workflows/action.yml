@@ -41,6 +41,8 @@ jobs:
           MAX_PER_RUN:      ${{ vars.MAX_PER_RUN }}
           EMBED_MODE: ${{ vars.EMBED_MODE }}
           EMBEDS_PER_REQ:       ${{ vars.EMBEDS_PER_REQ }}
+		  BIG_TRADE_THRESHOLD:       ${{ vars.BIG_TRADE_THRESHOLD }}
+		  ALERT_ROLE_ID:       ${{ vars.ALERT_ROLE_ID }}
 
           
         run: node index.mjs
