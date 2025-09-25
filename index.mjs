@@ -154,10 +154,9 @@ function buildEmbed(r) {
 
 /** ====== שליחה לדיסקורד (עם 429 Retry) ====== */
 async function sendDiscordEmbeds(embeds, mention) {
-  const payload = { embeds, allowed_mentions: { parse: [] } };
+  var payload = { embeds, allowed_mentions: { parse: [] } };
   if (mention) {
-    payload.content = `<@&${mention}>`;
-    payload.allowed_mentions = { roles: [mention] };
+    payload = { embeds, allowed_mentions: { parse: [mention] } };
   }
   
   for (let attempt = 1; attempt <= 5; attempt++) {
