@@ -157,7 +157,7 @@ async function sendDiscordEmbeds(embeds, mention) {
   console.log(`sendDiscordEmbeds(): embeds=${embeds}, mention=${mention}`);
   var payload = { embeds, allowed_mentions: { parse: [] } };
   if (mention && mention != undefined && mention != null && mention != "") {
-    payload = { embeds, allowed_mentions: { parse: [mention] } };
+    payload = { embeds, content: `<@&${mention}>` } };
   }
   
   for (let attempt = 1; attempt <= 5; attempt++) {
