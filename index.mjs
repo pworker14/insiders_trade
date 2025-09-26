@@ -133,7 +133,6 @@ function pickColorByTrade(tradeCode) {
   return 0x95a5a6; // אחר/נייטרלי
 }
 function oneLine(r) {
-  const isBig = Math.abs(Number.isFinite(r.value) ? r.value : parseMoney(r.valueText)) > 10_000_000;
   const parts = [
     `${r.tradeDate}\n`,
     `**$${r.ticker}  ${r.valueText}  (${r.qtyText} Stocks)**\n`,
@@ -143,7 +142,7 @@ function oneLine(r) {
   ].filter(Boolean);
 
   const line = parts.join("");
-  return isBig ? `${line}` : line;
+  return line;
 }
 
 function buildEmbed(r) {
@@ -280,8 +279,8 @@ async function sendDiscordText(content) {
         console.log(`Parsed Trade Value: ${tradeValue}`);
       }
 
-      if (Math.abs(Number.isFinite(tradeValue))  > BIG_TRADE_THRESHOLD) {
-        console.log(`[V] Trade value exceeds threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(Number.isFinite(tradeValue))}`);
+      if (Math.abs(tradeValue)  > BIG_TRADE_THRESHOLD) {
+        console.log(`[V] Trade value exceeds threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(tradeValue)}`);
         if (ALERT_ROLE_ID) {
           mention = ALERT_ROLE_ID;
           console.log(`Mentioning role ID: ${mention}`);
@@ -291,7 +290,7 @@ async function sendDiscordText(content) {
         }
       }
       else {
-        console.log(`[X] Trade value does not exceed threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(Number.isFinite(tradeValue))}`);
+        console.log(`[X] Trade value does not exceed threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(tradeValue)}`);
       }
 
       await sendDiscordEmbeds(embeds, mention);
