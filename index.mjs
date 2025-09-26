@@ -154,7 +154,6 @@ function buildEmbed(r) {
 
 /** ====== שליחה לדיסקורד (עם 429 Retry) ====== */
 async function sendDiscordEmbeds(embeds, mention) {
-  console.log(`sendDiscordEmbeds(): embeds=${embeds}, mention=${mention}`);
   var payload = { embeds, allowed_mentions: { parse: [] } };
   if (mention && mention != undefined && mention != null && mention != "") {
     payload = { embeds, content: `<@&${mention}>` };
@@ -267,30 +266,18 @@ async function sendDiscordText(content) {
     for (let i = 0; i < limited.length; i += EMBEDS_PER_REQ) {
       const slice = limited.slice(i, i + EMBEDS_PER_REQ);
       const embeds = slice.map(({ r }) => buildEmbed(r));
-      console.log(`first cell in slice:`, slice[0].r);
-      // const mention = (Math.abs(Number.isFinite(slice[0].r.value)) ? slice[0].r.value : parseMoney(slice[0].r.valueText)) > BIG_TRADE_THRESHOLD ? (ALERT_ROLE_ID ? ALERT_ROLE_ID : "") : "";
 
       var mention = "";
       var tradeValue = slice[0].r.value;
-      console.log(`Trade Value: ${tradeValue}`);
 
       if (tradeValue === undefined || tradeValue === null || tradeValue == "" || Number.isNaN(tradeValue) || !Number.isFinite(tradeValue)) {
         tradeValue = parseMoney(slice[0].r.valueText);
-        console.log(`Parsed Trade Value: ${tradeValue}`);
       }
 
       if (Math.abs(tradeValue)  > BIG_TRADE_THRESHOLD) {
-        console.log(`[V] Trade value exceeds threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(tradeValue)}`);
         if (ALERT_ROLE_ID) {
           mention = ALERT_ROLE_ID;
-          console.log(`Mentioning role ID: ${mention}`);
         }
-        else {
-          console.log(`ALERT_ROLE_ID is not set, so no mention will be made.`);
-        }
-      }
-      else {
-        console.log(`[X] Trade value does not exceed threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(tradeValue)}`);
       }
 
       await sendDiscordEmbeds(embeds, mention);
