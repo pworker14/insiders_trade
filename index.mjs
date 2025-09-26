@@ -281,10 +281,17 @@ async function sendDiscordText(content) {
       }
 
       if (Math.abs(Number.isFinite(tradeValue))  > BIG_TRADE_THRESHOLD) {
+        console.log(`[V] Trade value exceeds threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(Number.isFinite(tradeValue))}`);
         if (ALERT_ROLE_ID) {
           mention = ALERT_ROLE_ID;
           console.log(`Mentioning role ID: ${mention}`);
         }
+        else {
+          console.log(`ALERT_ROLE_ID is not set, so no mention will be made.`);
+        }
+      }
+      else {
+        console.log(`[X] Trade value does not exceed threshold of ${BIG_TRADE_THRESHOLD}, the value is: ${Math.abs(Number.isFinite(tradeValue))}`);
       }
 
       await sendDiscordEmbeds(embeds, mention);
