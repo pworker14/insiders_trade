@@ -4,6 +4,8 @@ import axios from "axios";
 import * as fs from "node:fs/promises";
 import path from "node:path";
 import { load } from "cheerio";
+import { passesListingAndCap } from "./listingAndCapFilter.js";
+
 
 /** ====== קונפיג מה-.env עם ברירות מחדל ====== */
 const OPENINSIDER_URL =
@@ -244,6 +246,26 @@ async function sendDiscordText(content) {
     // מניעת כפילויות
     const key = makeKey(r);
     if (sent.has(key)) continue;
+
+    // filter out messages with tickers that are not in NASDAQ/NYSE and market cap are less then 1B$
+    let validTickers = [r.ticker];
+    try {
+      const checks = await Promise.all(
+        tickersArr.map((t) => passesListingAndCap(t, { requireEquity: true }))
+      );
+      validTickers = tickersArr.filter((t, i) => checks[i]?.ok);
+      if (!validTickers.length) {
+        log("[X] Excluded due to: Market Cap or Exchange - ", r.ticker);
+        continue;
+      }
+    } catch (e) {
+      warn("Market Cap or Exchange check failed due to:", e.message);
+      log(
+        "[X] Excluded due to: Market Cap or Exchange check failed - ",
+        r.ticker
+      );
+      continue;
+    }
 
     toSend.push({ key, r });
   }
