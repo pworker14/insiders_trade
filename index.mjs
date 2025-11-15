@@ -270,7 +270,7 @@ async function sendDiscordText(content) {
       }
       console.log(`Valid ticker`);
     } catch (e) {
-      warn("Market Cap or Exchange check failed due to:", e.message);
+      console.warn("Market Cap or Exchange check failed due to:", e.message);
       log(
         "[X] Excluded due to: Market Cap or Exchange check failed - ",
         r.ticker
