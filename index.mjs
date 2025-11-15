@@ -219,14 +219,18 @@ async function sendDiscordText(content) {
 
   // 2) פרסינג כל השורות
   const rows = extractRows(html);
+  console.log(`extracted: ${rows} rows`);
 
   // 3) סינון לפי .env
   const sent = await loadSent();
+  console.log(`loaded sent`);
   const toSend = [];
 
   for (const r of rows) {
+    console.log(`handeling row: ${r}`);
     // סוג עסקה (P/S/…)
     if (TYPES.length && !TYPES.includes(r.tradeCode)) continue;
+    console.log(`type: ${r.tradeCode}`);
 
     // ימים אחורה (Filing & Trade)
     const dFiled = daysAgoFrom(r.filingDateTime);
@@ -236,6 +240,7 @@ async function sendDiscordText(content) {
 
     // מחיר מינימום
     if (!(Number.isFinite(r.price) && r.price >= MIN_PRICE)) continue;
+    console.log(`min price: ${r.price}`);
 
     // מינימום שווי עסקה באלפי $
     if (Number.isFinite(MIN_VALUE_K) && MIN_VALUE_K > 0) {
@@ -246,6 +251,7 @@ async function sendDiscordText(content) {
     // מניעת כפילויות
     const key = makeKey(r);
     if (sent.has(key)) continue;
+    console.log(`not a duplicate`);
 
     // filter out messages with tickers that are not in NASDAQ/NYSE and market cap are less then 1B$
     let validTickers = [r.ticker];
@@ -258,6 +264,7 @@ async function sendDiscordText(content) {
         log("[X] Excluded due to: Market Cap or Exchange - ", r.ticker);
         continue;
       }
+      console.log(`Valid ticker`);
     } catch (e) {
       warn("Market Cap or Exchange check failed due to:", e.message);
       log(
@@ -268,6 +275,7 @@ async function sendDiscordText(content) {
     }
 
     toSend.push({ key, r });
+    console.log(`added to send Q`);
   }
   
   // סדר את התוצאות מהישן לחדש כך שבבודעות החדשות ביותר יפורסמו אחרונות
