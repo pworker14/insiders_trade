@@ -32,7 +32,8 @@ jobs:
 
       - name: Get Insiders Trades
         env:
-          MAX_DAYS:          ${{ vars.MAX_DAYS }}
+          MAX_DAYS_TRADE:          ${{ vars.MAX_DAYS_TRADE }}
+          MAX_DAYS_FILED:    ${{ vars.MAX_DAYS_FILED }}
           MIN_PRICE:          ${{ vars.MIN_PRICE }}
           DISCORD_WEBHOOK_URL: ${{ vars.DISCORD_WEBHOOK_URL }}
           LOG_FILE:       ${{ vars.LOG_FILE }}
