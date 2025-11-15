@@ -265,13 +265,13 @@ async function sendDiscordText(content) {
       );
       validTickers = validTickers.filter((t, i) => checks[i]?.ok);
       if (!validTickers.length) {
-        log("[X] Excluded due to: Market Cap or Exchange - ", r.ticker);
+        console.log("[X] Excluded due to: Market Cap or Exchange - ", r.ticker);
         continue;
       }
       console.log(`Valid ticker`);
     } catch (e) {
       console.warn("Market Cap or Exchange check failed due to:", e.message);
-      log(
+      console.log(
         "[X] Excluded due to: Market Cap or Exchange check failed - ",
         r.ticker
       );
