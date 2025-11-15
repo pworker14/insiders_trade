@@ -259,12 +259,11 @@ async function sendDiscordText(content) {
 
     // filter out messages with tickers that are not in NASDAQ/NYSE and market cap are less then 1B$
     let validTickers = [r.ticker];
-    let tickersArr = {};
     try {
       const checks = await Promise.all(
-        tickersArr.map((t) => passesListingAndCap(t, { requireEquity: true }))
+        validTickers.map((t) => passesListingAndCap(t, { requireEquity: true }))
       );
-      validTickers = tickersArr.filter((t, i) => checks[i]?.ok);
+      validTickers = validTickers.filter((t, i) => checks[i]?.ok);
       if (!validTickers.length) {
         log("[X] Excluded due to: Market Cap or Exchange - ", r.ticker);
         continue;
