@@ -235,10 +235,12 @@ async function sendDiscordText(content) {
     // ימים אחורה (Filing & Trade)
     const dFiled = daysAgoFrom(r.filingDateTime);
     const dTrade = daysAgoFrom(r.tradeDate);
-    console.log(`filingDateTime: ${r.filingDateTime}`);
-    console.log(`tradeDate: ${r.tradeDate}`);
+    console.log(`filingDateTime: ${r.filingDateTime} dFiled: ${dFiled}`);
+    console.log(`tradeDate: ${r.tradeDate} dTrade: ${dTrade}`);
     if (!(dFiled <= MAX_DAYS_FILED)) continue;
+    console.log("dFiled <= MAX_DAYS_FILED");
     if (!(dTrade <= MAX_DAYS_TRADE)) continue;
+    console.log("dTrade <= MAX_DAYS_TRADE");
 
     // מחיר מינימום
     if (!(Number.isFinite(r.price) && r.price >= MIN_PRICE)) continue;
