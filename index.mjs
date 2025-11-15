@@ -219,7 +219,7 @@ async function sendDiscordText(content) {
 
   // 2) פרסינג כל השורות
   const rows = extractRows(html);
-  console.log(`extracted: ${rows} rows`);
+  console.log(`extracted: ${rows.length} rows`);
 
   // 3) סינון לפי .env
   const sent = await loadSent();
@@ -235,6 +235,8 @@ async function sendDiscordText(content) {
     // ימים אחורה (Filing & Trade)
     const dFiled = daysAgoFrom(r.filingDateTime);
     const dTrade = daysAgoFrom(r.tradeDate);
+    console.log(`filingDateTime: ${r.filingDateTime}`);
+    console.log(`tradeDate: ${r.tradeDate}`);
     if (!(dFiled <= MAX_DAYS_FILED)) continue;
     if (!(dTrade <= MAX_DAYS_TRADE)) continue;
 
